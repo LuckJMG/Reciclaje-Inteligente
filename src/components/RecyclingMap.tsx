@@ -253,7 +253,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
           <div className="flex items-center gap-2 p-3">
             <Search className="text-primary w-5 h-5 flex-shrink-0" />
             <Input 
-              placeholder="Buscar dirección en Santiago..." 
+              placeholder="Buscar dirección..." 
               className="border-0 focus-visible:ring-0 p-0 h-auto"
               value={searchQuery}
               onChange={(e) => handleSearchInput(e.target.value)}
