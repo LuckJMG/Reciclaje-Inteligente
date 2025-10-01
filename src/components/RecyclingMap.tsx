@@ -3,11 +3,12 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { recyclingPoints, RecyclingPoint } from '@/data/recyclingPoints';
 import { RecyclingPointModal } from './RecyclingPointModal';
-import { MapPin, Search, Locate } from 'lucide-react';
+import { MapPin, Search, Navigation } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface RecyclingMapProps {
   mapboxToken: string;
@@ -261,12 +262,12 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
               onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
             />
             <Button 
-              size="icon"
               variant="ghost"
               onClick={handleSearch}
               disabled={isSearching || !searchQuery.trim()}
+              className="h-auto px-3 py-2"
             >
-              <Search className="w-4 h-4" />
+              Buscar
             </Button>
           </div>
           
@@ -287,14 +288,22 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
         </div>
       </div>
 
-      <Button
-        size="icon"
-        className="absolute bottom-20 right-4 z-10 h-14 w-14 rounded-full shadow-elevated"
-        onClick={findNearest}
-        title="Buscar punto más cercano"
-      >
-        <Locate className="w-6 h-6" />
-      </Button>
+      <TooltipProvider>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              className="absolute bottom-4 right-4 z-10 h-14 w-14 rounded-full shadow-elevated"
+              onClick={findNearest}
+            >
+              <Navigation className="w-6 h-6" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Encontrar punto más cercano</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <div className="absolute bottom-4 left-4 z-10 bg-card rounded-lg shadow-elevated p-4 space-y-2 text-sm">
         <div className="flex items-center gap-2">
