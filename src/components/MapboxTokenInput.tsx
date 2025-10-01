@@ -26,15 +26,15 @@ export const MapboxTokenInput: React.FC<MapboxTokenInputProps> = ({ onTokenSubmi
           <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-2">
             <MapPin className="w-6 h-6 text-primary" />
           </div>
-          <CardTitle className="text-center text-xl">Mapbox Token Required</CardTitle>
+          <CardTitle className="text-center text-xl">Token de Mapbox Requerido</CardTitle>
           <CardDescription className="text-center">
-            Enter your Mapbox public token to view the interactive map
+            Ingresa tu token público de Mapbox para ver el mapa interactivo
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <Alert>
             <AlertDescription className="text-sm">
-              Don't have a token? Get one free at{' '}
+              ¿No tienes un token? Obtén uno gratis en{' '}
               <a
                 href="https://account.mapbox.com/access-tokens/"
                 target="_blank"
@@ -56,12 +56,12 @@ export const MapboxTokenInput: React.FC<MapboxTokenInputProps> = ({ onTokenSubmi
               className="font-mono text-sm"
             />
             <Button type="submit" className="w-full" disabled={!token.trim()}>
-              Load Map
+              Cargar Mapa
             </Button>
           </form>
 
           <p className="text-xs text-muted-foreground text-center">
-            Your token is stored locally in your browser
+            Tu token se guarda localmente en tu navegador
           </p>
         </CardContent>
       </Card>

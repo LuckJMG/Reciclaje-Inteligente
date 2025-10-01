@@ -37,11 +37,11 @@ export const RecyclingPointModal: React.FC<RecyclingPointModalProps> = ({
   const getStatusText = (status: string) => {
     switch (status) {
       case 'available':
-        return 'Available';
+        return 'Disponible';
       case 'nearly-full':
-        return 'Nearly Full';
+        return 'Casi Lleno';
       case 'full':
-        return 'Full';
+        return 'Lleno';
       default:
         return status;
     }
@@ -63,7 +63,7 @@ export const RecyclingPointModal: React.FC<RecyclingPointModalProps> = ({
           <div className="flex items-center justify-between py-3 border-y">
             <div className="flex items-center gap-2">
               <Trash2 className="w-5 h-5 text-primary" />
-              <span className="font-medium">Container Status</span>
+              <span className="font-medium">Estado del Contenedor</span>
             </div>
             <Badge className={getStatusColor(point.status)}>
               {getStatusText(point.status)}
@@ -73,7 +73,7 @@ export const RecyclingPointModal: React.FC<RecyclingPointModalProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-3">
               <RefreshCw className="w-5 h-5 text-primary" />
-              <span className="font-medium">Accepted Materials</span>
+              <span className="font-medium">Materiales Aceptados</span>
             </div>
             <div className="flex flex-wrap gap-2">
               {point.materials.map((material) => {
@@ -91,13 +91,13 @@ export const RecyclingPointModal: React.FC<RecyclingPointModalProps> = ({
           <div className="flex items-start gap-2">
             <Clock className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
             <div className="text-sm">
-              <p className="font-medium mb-1">Operating Hours</p>
+              <p className="font-medium mb-1">Horario de Atención</p>
               <p className="text-muted-foreground">{point.hours}</p>
             </div>
           </div>
 
           <div className="pt-2 border-t text-xs text-muted-foreground">
-            Last updated: {point.lastUpdate}
+            Última actualización: {point.lastUpdate}
           </div>
         </div>
       </DialogContent>

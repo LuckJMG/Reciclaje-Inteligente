@@ -31,8 +31,8 @@ const Index = () => {
               <Recycle className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">Smart Recycling</h1>
-              <p className="text-xs text-muted-foreground">Find, Learn, Recycle</p>
+              <h1 className="text-xl font-bold text-foreground">Reciclaje Inteligente</h1>
+              <p className="text-xs text-muted-foreground">Encuentra, Aprende, Recicla</p>
             </div>
           </div>
         </div>
@@ -43,11 +43,11 @@ const Index = () => {
           <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6 shadow-soft">
             <TabsTrigger value="map" className="gap-2">
               <Map className="w-4 h-4" />
-              <span className="hidden sm:inline">Map</span>
+              <span className="hidden sm:inline">Mapa</span>
             </TabsTrigger>
             <TabsTrigger value="learn" className="gap-2">
               <BookOpen className="w-4 h-4" />
-              <span className="hidden sm:inline">Learn</span>
+              <span className="hidden sm:inline">Aprende</span>
             </TabsTrigger>
           </TabsList>
 
