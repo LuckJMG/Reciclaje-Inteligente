@@ -3,10 +3,11 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { recyclingPoints, RecyclingPoint } from '@/data/recyclingPoints';
 import { RecyclingPointModal } from './RecyclingPointModal';
-import { MapPin, Search } from 'lucide-react';
+import { MapPin, Search, Locate } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
+import { Card } from '@/components/ui/card';
 
 interface RecyclingMapProps {
   mapboxToken: string;
@@ -19,6 +20,8 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
   const [selectedPoint, setSelectedPoint] = useState<RecyclingPoint | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const { toast } = useToast();
 
   useEffect(() => {
@@ -29,7 +32,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     map.current = new mapboxgl.Map({
       container: mapContainer.current,
       style: 'mapbox://styles/mapbox/streets-v12',
-      center: [-73.9654, 40.7829],
+      center: [-70.6109, -33.4272],
       zoom: 12,
     });
 
@@ -51,7 +54,8 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.transition = 'var(--transition-smooth)';
+      el.style.transition = 'transform 0.2s ease';
+      el.style.position = 'relative';
       
       // Set color based on status
       if (point.status === 'available') {
@@ -65,20 +69,21 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.1)';
-        el.style.zIndex = '1000';
+        el.style.transform = 'scale(1.15)';
       });
 
       el.addEventListener('mouseleave', () => {
         el.style.transform = 'scale(1)';
-        el.style.zIndex = 'auto';
       });
 
       el.addEventListener('click', () => {
         setSelectedPoint(point);
       });
 
-      const marker = new mapboxgl.Marker(el)
+      const marker = new mapboxgl.Marker({
+        element: el,
+        anchor: 'center'
+      })
         .setLngLat([point.lng, point.lat])
         .addTo(map.current!);
 
@@ -92,14 +97,59 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     };
   }, [mapboxToken]);
 
+  const fetchSuggestions = async (query: string) => {
+    if (!query.trim() || query.length < 3) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxToken}&limit=5&country=cl&proximity=-70.6506,-33.4372`
+      );
+      
+      if (response.ok) {
+        const data = await response.json();
+        setSuggestions(data.features || []);
+        setShowSuggestions(true);
+      }
+    } catch (error) {
+      console.error('Error fetching suggestions:', error);
+    }
+  };
+
+  const handleSearchInput = (value: string) => {
+    setSearchQuery(value);
+    fetchSuggestions(value);
+  };
+
+  const handleSuggestionClick = (suggestion: any) => {
+    const [lng, lat] = suggestion.center;
+    setSearchQuery(suggestion.place_name);
+    setShowSuggestions(false);
+    
+    map.current?.flyTo({
+      center: [lng, lat],
+      zoom: 14,
+      duration: 2000
+    });
+    
+    toast({
+      title: "Ubicación encontrada",
+      description: suggestion.place_name,
+    });
+  };
+
   const handleSearch = async () => {
     if (!searchQuery.trim() || !map.current) return;
     
     setIsSearching(true);
+    setShowSuggestions(false);
     
     try {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?access_token=${mapboxToken}&limit=1`
+        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(searchQuery)}.json?access_token=${mapboxToken}&limit=1&country=cl`
       );
       
       if (!response.ok) {
@@ -194,34 +244,53 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
       
-      <div className="absolute top-4 left-4 right-4 z-10 flex gap-2 flex-col sm:flex-row">
-        <div className="flex-1 bg-card rounded-lg shadow-elevated p-3">
-          <div className="flex items-center gap-2">
+      <div className="absolute top-4 left-4 right-20 z-10">
+        <div className="relative bg-card rounded-lg shadow-elevated">
+          <div className="flex items-center gap-2 p-3">
             <Search className="text-primary w-5 h-5 flex-shrink-0" />
             <Input 
-              placeholder="Buscar dirección..." 
+              placeholder="Buscar dirección en Santiago..." 
               className="border-0 focus-visible:ring-0 p-0 h-auto"
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => handleSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+              onFocus={() => suggestions.length > 0 && setShowSuggestions(true)}
             />
             <Button 
-              size="sm" 
+              size="icon"
+              variant="ghost"
               onClick={handleSearch}
               disabled={isSearching || !searchQuery.trim()}
-              className="sm:hidden"
             >
-              {isSearching ? 'Buscando...' : 'Buscar'}
+              <Search className="w-4 h-4" />
             </Button>
           </div>
+          
+          {showSuggestions && suggestions.length > 0 && (
+            <Card className="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto">
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={index}
+                  className="p-3 hover:bg-accent cursor-pointer transition-colors border-b last:border-b-0"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  <div className="text-sm font-medium">{suggestion.text}</div>
+                  <div className="text-xs text-muted-foreground">{suggestion.place_name}</div>
+                </div>
+              ))}
+            </Card>
+          )}
         </div>
-        <Button 
-          className="sm:w-auto"
-          onClick={findNearest}
-        >
-          Buscar Más Cercano
-        </Button>
       </div>
+
+      <Button
+        size="icon"
+        className="absolute bottom-20 right-4 z-10 h-14 w-14 rounded-full shadow-elevated"
+        onClick={findNearest}
+        title="Buscar punto más cercano"
+      >
+        <Locate className="w-6 h-6" />
+      </Button>
 
       <div className="absolute bottom-4 left-4 z-10 bg-card rounded-lg shadow-elevated p-4 space-y-2 text-sm">
         <div className="flex items-center gap-2">
