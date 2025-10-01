@@ -1,12 +1,73 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import React, { useState, useEffect } from 'react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { RecyclingMap } from '@/components/RecyclingMap';
+import { EducationalPosts } from '@/components/EducationalPosts';
+import { MapboxTokenInput } from '@/components/MapboxTokenInput';
+import { Map, BookOpen, Recycle } from 'lucide-react';
+
+const MAPBOX_TOKEN_KEY = 'mapbox_token';
 
 const Index = () => {
+  const [mapboxToken, setMapboxToken] = useState<string>('');
+
+  useEffect(() => {
+    const savedToken = localStorage.getItem(MAPBOX_TOKEN_KEY);
+    if (savedToken) {
+      setMapboxToken(savedToken);
+    }
+  }, []);
+
+  const handleTokenSubmit = (token: string) => {
+    localStorage.setItem(MAPBOX_TOKEN_KEY, token);
+    setMapboxToken(token);
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-gradient-hero">
+      <header className="border-b bg-card/80 backdrop-blur-sm sticky top-0 z-50 shadow-soft">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex items-center gap-3">
+            <div className="p-2 rounded-lg bg-gradient-eco">
+              <Recycle className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-foreground">Smart Recycling</h1>
+              <p className="text-xs text-muted-foreground">Find, Learn, Recycle</p>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-6">
+        <Tabs defaultValue="map" className="w-full">
+          <TabsList className="grid w-full max-w-md mx-auto grid-cols-2 mb-6 shadow-soft">
+            <TabsTrigger value="map" className="gap-2">
+              <Map className="w-4 h-4" />
+              <span className="hidden sm:inline">Map</span>
+            </TabsTrigger>
+            <TabsTrigger value="learn" className="gap-2">
+              <BookOpen className="w-4 h-4" />
+              <span className="hidden sm:inline">Learn</span>
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="map" className="mt-0">
+            <div className="h-[calc(100vh-200px)] rounded-lg overflow-hidden shadow-elevated bg-card">
+              {mapboxToken ? (
+                <RecyclingMap mapboxToken={mapboxToken} />
+              ) : (
+                <MapboxTokenInput onTokenSubmit={handleTokenSubmit} />
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="learn" className="mt-0">
+            <div className="h-[calc(100vh-200px)] rounded-lg overflow-hidden shadow-elevated bg-card p-4 sm:p-6">
+              <EducationalPosts />
+            </div>
+          </TabsContent>
+        </Tabs>
+      </main>
     </div>
   );
 };
