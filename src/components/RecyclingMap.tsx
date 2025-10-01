@@ -47,33 +47,37 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     recyclingPoints.forEach((point) => {
       const el = document.createElement('div');
       el.className = 'recycling-marker';
-      el.style.width = '40px';
-      el.style.height = '40px';
-      el.style.borderRadius = '50%';
       el.style.cursor = 'pointer';
-      el.style.display = 'flex';
-      el.style.alignItems = 'center';
-      el.style.justifyContent = 'center';
-      el.style.transition = 'transform 0.2s ease';
-      el.style.position = 'relative';
+      
+      // Create inner element for styling and animations
+      const inner = document.createElement('div');
+      inner.style.width = '40px';
+      inner.style.height = '40px';
+      inner.style.borderRadius = '50%';
+      inner.style.display = 'flex';
+      inner.style.alignItems = 'center';
+      inner.style.justifyContent = 'center';
+      inner.style.transition = 'transform 0.2s ease';
       
       // Set color based on status
       if (point.status === 'available') {
-        el.style.backgroundColor = 'hsl(var(--status-available))';
+        inner.style.backgroundColor = 'hsl(var(--status-available))';
       } else if (point.status === 'nearly-full') {
-        el.style.backgroundColor = 'hsl(var(--status-nearly-full))';
+        inner.style.backgroundColor = 'hsl(var(--status-nearly-full))';
       } else {
-        el.style.backgroundColor = 'hsl(var(--status-full))';
+        inner.style.backgroundColor = 'hsl(var(--status-full))';
       }
       
-      el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+      inner.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
+      
+      el.appendChild(inner);
 
       el.addEventListener('mouseenter', () => {
-        el.style.transform = 'scale(1.15)';
+        inner.style.transform = 'scale(1.1)';
       });
 
       el.addEventListener('mouseleave', () => {
-        el.style.transform = 'scale(1)';
+        inner.style.transform = 'scale(1)';
       });
 
       el.addEventListener('click', () => {
