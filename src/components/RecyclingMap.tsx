@@ -43,6 +43,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       'top-right'
     );
 
+    
     // Add markers for each recycling point
     recyclingPoints.forEach((point) => {
       const el = document.createElement('div');
