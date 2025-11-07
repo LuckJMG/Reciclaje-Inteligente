@@ -11,17 +11,33 @@ import { Button } from '@/components/ui/button';
 export const EducationalPosts: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPost, setSelectedPost] = useState<EducationalPost | null>(null);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
 
-  const filteredPosts = educationalPosts.filter(
-    (post) =>
+  const categories = Array.from(new Set(educationalPosts.map(post => post.category)));
+
+  const toggleCategory = (category: string) => {
+    setSelectedCategories(prev =>
+      prev.includes(category)
+        ? prev.filter(c => c !== category)
+        : [...prev, category]
+    );
+  };
+
+  const filteredPosts = educationalPosts.filter((post) => {
+    const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       post.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      post.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+      post.category.toLowerCase().includes(searchQuery.toLowerCase());
+    
+    const matchesCategory =
+      selectedCategories.length === 0 || selectedCategories.includes(post.category);
+    
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="sticky top-0 z-10 bg-gradient-hero pb-4 sm:pb-6">
+      <div className="sticky top-0 z-10 bg-gradient-hero pb-4 sm:pb-6 space-y-4">
         <div className="relative">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
           <Input
@@ -30,6 +46,26 @@ export const EducationalPosts: React.FC = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 h-12 bg-card shadow-soft"
           />
+        </div>
+        
+        <div className="flex flex-wrap gap-2">
+          {categories.map((category) => {
+            const Icon = getMaterialIcon(category);
+            const isSelected = selectedCategories.includes(category);
+            return (
+              <Button
+                key={category}
+                variant={isSelected ? "default" : "outline"}
+                size="sm"
+                onClick={() => toggleCategory(category)}
+                className="flex items-center gap-2"
+              >
+                <Icon className="w-4 h-4" />
+                {category}
+                {isSelected && <X className="w-3 h-3" />}
+              </Button>
+            );
+          })}
         </div>
       </div>
 
