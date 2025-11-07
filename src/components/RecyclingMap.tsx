@@ -285,7 +285,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
             </Button>
           </TooltipTrigger>
           <TooltipContent side="left">
-            <p>Encontrar punto de reciclaje más cercano</p>
+            <p>Ubicación actual</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
