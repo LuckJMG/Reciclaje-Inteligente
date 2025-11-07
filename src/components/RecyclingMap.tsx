@@ -44,6 +44,10 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       }),
       'top-right'
     );
+    // Hide autocomplete when clicking on map
+    map.current.on('click', () => {
+      setShowSuggestions(false);
+    });
 
     // Add markers for each recycling point
     recyclingPoints.forEach((point) => {
@@ -113,7 +117,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
 
     try {
       const response = await fetch(
-        `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxToken}&limit=5&country=cl&proximity=-70.6506,-33.4372`
+                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${mapboxToken}&limit=5&country=cl`
       );
       
       if (response.ok) {
