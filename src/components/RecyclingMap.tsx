@@ -3,7 +3,7 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { recyclingPoints, RecyclingPoint } from '@/data/recyclingPoints';
 import { RecyclingPointModal } from './RecyclingPointModal';
-import { MapPin, Search, Navigation } from 'lucide-react';
+import { MapPin, Search, Navigation, locate-fixed} from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -296,11 +296,11 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
               className="absolute bottom-4 right-4 z-10 h-14 w-14 rounded-full shadow-elevated"
               onClick={findNearest}
             >
-              <Navigation className="w-6 h-6" />
+              <locate-fixed className="w-6 h-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="left">
-            <p>Encontrar punto más cercano</p>
+            <p>Encontrar punto de reciclaje más cercano</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
