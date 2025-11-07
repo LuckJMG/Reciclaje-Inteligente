@@ -193,7 +193,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     }
   };
 
-  const findNearest = () => {
+  const goToMyLocation = () => {
     if (!map.current) return;
     
     if ('geolocation' in navigator) {
@@ -202,30 +202,15 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
           
-          let nearest = recyclingPoints[0];
-          let minDistance = Infinity;
-          
-          recyclingPoints.forEach(point => {
-            const distance = Math.sqrt(
-              Math.pow(point.lat - userLat, 2) + Math.pow(point.lng - userLng, 2)
-            );
-            if (distance < minDistance) {
-              minDistance = distance;
-              nearest = point;
-            }
-          });
-          
           map.current?.flyTo({
-            center: [nearest.lng, nearest.lat],
+            center: [userLng, userLat],
             zoom: 15,
             duration: 2000
           });
           
-          setSelectedPoint(nearest);
-          
           toast({
-            title: "Punto más cercano",
-            description: nearest.name,
+            title: "Ubicación encontrada",
+            description: "El mapa se ha centrado en tu ubicación actual",
           });
         },
         () => {
@@ -294,7 +279,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
             <Button
               size="icon"
               className="absolute bottom-4 right-4 z-10 h-14 w-14 rounded-full shadow-elevated"
-              onClick={findNearest}
+              onClick={goToMyLocation}
             >
               <LocateFixed className="w-6 h-6" />
             </Button>
