@@ -18,6 +18,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
   const markers = useRef<mapboxgl.Marker[]>([]);
+  const userLocationMarker = useRef<mapboxgl.Marker | null>(null);
   const [selectedPoint, setSelectedPoint] = useState<RecyclingPoint | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -98,6 +99,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     return () => {
       markers.current.forEach(marker => marker.remove());
       markers.current = [];
+      userLocationMarker.current?.remove();
       map.current?.remove();
     };
   }, [mapboxToken]);
@@ -193,7 +195,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     }
   };
 
-  const findNearest = () => {
+  const goToMyLocation = () => {
     if (!map.current) return;
     
     if ('geolocation' in navigator) {
@@ -201,31 +203,40 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
         (position) => {
           const userLat = position.coords.latitude;
           const userLng = position.coords.longitude;
-          
-          let nearest = recyclingPoints[0];
-          let minDistance = Infinity;
-          
-          recyclingPoints.forEach(point => {
-            const distance = Math.sqrt(
-              Math.pow(point.lat - userLat, 2) + Math.pow(point.lng - userLng, 2)
-            );
-            if (distance < minDistance) {
-              minDistance = distance;
-              nearest = point;
-            }
-          });
+
+          //Borrar el marcador si es que existe (para simular actualización)
+          if (userLocationMarker.current) {
+            userLocationMarker.current.remove();
+          }
+
+          //Marcador
+
+          const el = document.createElement('div');
+          el.style.width = '20px';
+          el.style.height = '20px';
+          el.style.borderRadius = '50%';
+          el.style.backgroundColor = '#3b82f6'; // Azul
+          el.style.border = '3px solid white';
+          el.style.boxShadow = '0 0 10px rgba(59, 130, 246, 0.5)';
+          el.style.cursor = 'pointer';
+
+          userLocationMarker.current = new mapboxgl.Marker({
+            element: el,
+            anchor: 'center'
+          })
+            .setLngLat([userLng,userLat])
+            .addTo(map.current)
+
           
           map.current?.flyTo({
-            center: [nearest.lng, nearest.lat],
+            center: [userLng, userLat],
             zoom: 15,
             duration: 2000
           });
           
-          setSelectedPoint(nearest);
-          
           toast({
-            title: "Punto más cercano",
-            description: nearest.name,
+            title: "Ubicación encontrada",
+            description: "El mapa se ha centrado en tu ubicación actual",
           });
         },
         () => {
@@ -294,13 +305,13 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
             <Button
               size="icon"
               className="absolute bottom-4 right-4 z-10 h-14 w-14 rounded-full shadow-elevated"
-              onClick={findNearest}
+              onClick={goToMyLocation}
             >
               <LocateFixed className="w-6 h-6" />
             </Button>
           </TooltipTrigger>
           <TooltipContent side="left">
-            <p>Encontrar punto de reciclaje más cercano</p>
+            <p>Ubicación actual</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
