@@ -1,73 +1,54 @@
-# Welcome to your Lovable project
+# Sistema de Gestión Inteligente de Contenedores de Reciclaje
 
-## Project info
+Proyecto desarrollado para el ramo **Diseño de Interfaces Usuarias** enfocado en testing de usuarios y experiencia de usuario. Prototipo desarrollado con lovable.dev y con react como base.
 
-**URL**: https://lovable.dev/projects/c9526c26-9046-4f96-a237-7e03a88772b1
+**URL Proyecto:** https://lovable.dev/projects/c9526c26-9046-4f96-a237-7e03a88772b1
 
-## How can I edit this code?
+## Descripción del Proyecto
 
-There are several ways of editing your application.
+Aplicación web que centraliza la información sobre puntos de reciclaje, facilitando el acceso a datos sobre ubicación y estado de contenedores. Dirigida a adultos jóvenes (20-40 años) que viven de forma independiente y buscan reducir su huella de carbono mediante prácticas de reciclaje efectivas.
 
-**Use Lovable**
+### Problemática
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c9526c26-9046-4f96-a237-7e03a88772b1) and start prompting.
+Las nuevas generaciones de adultos jóvenes desean reciclar más y ser ambientalmente responsables, pero enfrentan dificultades por:
+- Falta de información clara sobre ubicación de puntos de reciclaje
+- Desconocimiento del estado actual de los contenedores
+- Información dispersa y de difícil acceso
 
-Changes made via Lovable will be committed automatically to this repo.
+### Solución
 
-**Use your preferred IDE**
+Plataforma que centraliza información de reciclaje con una interfaz intuitiva que permite:
+- Visualizar puntos de reciclaje en un mapa interactivo
+- Consultar el estado en tiempo real de los contenedores
+- Acceder a contenido educativo sobre prácticas de reciclaje
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## Funcionalidades Principales
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 1. Mapa de Puntos de Reciclaje
+- Visualización geográfica de contenedores disponibles
+- Búsqueda de puntos cercanos a la ubicación del usuario
+- Navegación intuitiva por el mapa
 
-Follow these steps:
+### 2. Información de Estado de Contenedores
+- Estado actual de cada contenedor (disponible, lleno, fuera de servicio)
+- Detalles de ubicación exacta
+- Tipos de materiales aceptados
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+### 3. Posts Informativos de Reciclaje
+- Guías sobre cómo preparar basura para reciclaje
+- Instrucciones de separación por categorías
+- Filtros por tipo de material
+- Buscador de contenido educativo
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+## Instalación y Uso
 
-# Step 3: Install the necessary dependencies.
-npm i
+```bash
+# Clonar repositorio
+git clone https://github.com/LuckJMG/Reciclaje-Inteligente.git
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Instalar dependencias
+npm install
+
+# Ejecutar en desarrollo
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/c9526c26-9046-4f96-a237-7e03a88772b1) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
