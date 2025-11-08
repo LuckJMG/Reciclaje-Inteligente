@@ -320,7 +320,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
               variant="ghost"
               onClick={handleSearch}
               disabled={isSearching || !searchQuery.trim()}
-              className="h-auto px-3 py-2"
+              className="h-auto px-3 py-2 hover:bg-accent"
             >
               Buscar
             </Button>
@@ -328,7 +328,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
               variant="ghost"
               size="icon"
               onClick={() => setShowFilters(!showFilters)}
-              className="h-auto px-3 py-2"
+              className="h-10 w-10 flex-shrink-0"
             >
               <Filter className="w-5 h-5" />
             </Button>
