@@ -3,12 +3,13 @@ import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { recyclingPoints, RecyclingPoint } from '@/data/recyclingPoints';
 import { RecyclingPointModal } from './RecyclingPointModal';
-import { MapPin, Search, Navigation, LocateFixed } from 'lucide-react';
+import { MapPin, Search, Navigation, LocateFixed, Filter, X } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Card } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface RecyclingMapProps {
   mapboxToken: string;
@@ -24,7 +25,15 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
   const [isSearching, setIsSearching] = useState(false);
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedMaterials, setSelectedMaterials] = useState<string[]>([]);
   const { toast } = useToast();
+
+  // Get unique materials from all recycling points
+  const allMaterials = Array.from(
+    new Set(recyclingPoints.flatMap(point => point.materials))
+  ).sort();
 
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken) return;
@@ -49,8 +58,29 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       setShowSuggestions(false);
     });
 
-    // Add markers for each recycling point
-    recyclingPoints.forEach((point) => {
+    return () => {
+      map.current?.remove();
+    };
+  }, [mapboxToken]);
+
+  // Handle markers separately to allow filtering
+  useEffect(() => {
+    if (!map.current) return;
+
+    // Remove existing markers
+    markers.current.forEach(marker => marker.remove());
+    markers.current = [];
+
+    // Filter recycling points based on selected filters
+    const filteredPoints = recyclingPoints.filter(point => {
+      const statusMatch = selectedStatuses.length === 0 || selectedStatuses.includes(point.status);
+      const materialMatch = selectedMaterials.length === 0 || 
+        selectedMaterials.some(material => point.materials.includes(material));
+      return statusMatch && materialMatch;
+    });
+
+    // Add markers for filtered recycling points
+    filteredPoints.forEach((point) => {
       const el = document.createElement('div');
       el.className = 'recycling-marker';
       el.style.cursor = 'pointer';
@@ -99,14 +129,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
 
       markers.current.push(marker);
     });
-
-    return () => {
-      markers.current.forEach(marker => marker.remove());
-      markers.current = [];
-      userLocationMarker.current?.remove();
-      map.current?.remove();
-    };
-  }, [mapboxToken]);
+  }, [selectedStatuses, selectedMaterials]);
 
   const fetchSuggestions = async (query: string) => {
     if (!query.trim() || query.length < 3) {
@@ -260,6 +283,23 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
     }
   };
 
+  const handleStatusToggle = (status: string) => {
+    setSelectedStatuses(prev =>
+      prev.includes(status) ? prev.filter(s => s !== status) : [...prev, status]
+    );
+  };
+
+  const handleMaterialToggle = (material: string) => {
+    setSelectedMaterials(prev =>
+      prev.includes(material) ? prev.filter(m => m !== material) : [...prev, material]
+    );
+  };
+
+  const clearFilters = () => {
+    setSelectedStatuses([]);
+    setSelectedMaterials([]);
+  };
+
   return (
     <div className="relative w-full h-full">
       <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
@@ -284,6 +324,14 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
             >
               Buscar
             </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setShowFilters(!showFilters)}
+              className="h-auto px-3 py-2"
+            >
+              <Filter className="w-5 h-5" />
+            </Button>
           </div>
           
           {showSuggestions && suggestions.length > 0 && (
@@ -298,6 +346,92 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
                   <div className="text-xs text-muted-foreground">{suggestion.place_name}</div>
                 </div>
               ))}
+            </Card>
+          )}
+
+          {showFilters && (
+            <Card className="absolute top-full left-0 right-0 mt-1 p-4 max-h-96 overflow-y-auto">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold text-sm">Filtros</h3>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowFilters(false)}
+                  className="h-auto p-1"
+                >
+                  <X className="w-4 h-4" />
+                </Button>
+              </div>
+
+              <div className="space-y-4">
+                <div>
+                  <h4 className="text-sm font-medium mb-2">Estado</h4>
+                  <div className="space-y-2">
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="status-available"
+                        checked={selectedStatuses.includes('available')}
+                        onCheckedChange={() => handleStatusToggle('available')}
+                      />
+                      <label htmlFor="status-available" className="flex items-center gap-2 text-sm cursor-pointer">
+                        <div className="w-3 h-3 rounded-full bg-status-available"></div>
+                        Disponible
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="status-nearly-full"
+                        checked={selectedStatuses.includes('nearly-full')}
+                        onCheckedChange={() => handleStatusToggle('nearly-full')}
+                      />
+                      <label htmlFor="status-nearly-full" className="flex items-center gap-2 text-sm cursor-pointer">
+                        <div className="w-3 h-3 rounded-full bg-status-nearlyFull"></div>
+                        Casi Lleno
+                      </label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox
+                        id="status-full"
+                        checked={selectedStatuses.includes('full')}
+                        onCheckedChange={() => handleStatusToggle('full')}
+                      />
+                      <label htmlFor="status-full" className="flex items-center gap-2 text-sm cursor-pointer">
+                        <div className="w-3 h-3 rounded-full bg-status-full"></div>
+                        Lleno
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium mb-2">Materiales</h4>
+                  <div className="space-y-2 max-h-48 overflow-y-auto">
+                    {allMaterials.map((material) => (
+                      <div key={material} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`material-${material}`}
+                          checked={selectedMaterials.includes(material)}
+                          onCheckedChange={() => handleMaterialToggle(material)}
+                        />
+                        <label htmlFor={`material-${material}`} className="text-sm cursor-pointer">
+                          {material}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {(selectedStatuses.length > 0 || selectedMaterials.length > 0) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={clearFilters}
+                    className="w-full"
+                  >
+                    Limpiar filtros
+                  </Button>
+                )}
+              </div>
             </Card>
           )}
         </div>
