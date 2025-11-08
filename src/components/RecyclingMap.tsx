@@ -265,7 +265,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
       
       <div className="absolute top-4 left-4 right-20 z-10">
-        <div className="relative bg-card rounded-lg shadow-elevated">
+        <div className="relative bg-card rounded-lg shadow-elevated overflow-hidden">
           <div className="flex items-center gap-2 p-3">
             <Search className="text-primary w-5 h-5 flex-shrink-0" />
             <Input 
