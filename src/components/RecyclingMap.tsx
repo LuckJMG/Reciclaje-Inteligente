@@ -305,7 +305,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       <div ref={mapContainer} className="absolute inset-0 rounded-lg" />
       
       <div className="absolute top-4 left-4 right-20 z-10">
-        <div className="relative bg-card rounded-lg shadow-elevated">
+        <div className="relative bg-card rounded-lg shadow-elevated overflow-hidden">
           <div className="flex items-center gap-2 p-3">
             <Search className="text-primary w-5 h-5 flex-shrink-0" />
             <Input 
@@ -320,25 +320,22 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
               variant="ghost"
               onClick={handleSearch}
               disabled={isSearching || !searchQuery.trim()}
-              className="h-auto px-3 py-2 hover:bg-accent"
+              className="h-auto px-3 py-2"
             >
               Buscar
             </Button>
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => {
-                console.log('Filter button clicked, current state:', showFilters);
-                setShowFilters(!showFilters);
-              }}
-              className="h-10 w-10 flex-shrink-0"
+              onClick={() => setShowFilters(!showFilters)}
+              className="h-auto px-3 py-2"
             >
               <Filter className="w-5 h-5" />
             </Button>
           </div>
           
           {showSuggestions && suggestions.length > 0 && (
-            <Card className="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto z-20">
+            <Card className="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto">
               {suggestions.map((suggestion, index) => (
                 <div
                   key={index}
@@ -353,7 +350,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
           )}
 
           {showFilters && (
-            <Card className="absolute top-full left-0 right-0 mt-1 p-4 max-h-96 overflow-y-auto z-20 bg-card">
+            <Card className="absolute top-full left-0 right-0 mt-1 p-4 max-h-96 overflow-y-auto">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-sm">Filtros</h3>
                 <Button
