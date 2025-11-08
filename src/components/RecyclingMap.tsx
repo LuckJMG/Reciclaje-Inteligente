@@ -270,7 +270,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
             <Search className="text-primary w-5 h-5 flex-shrink-0" />
             <Input 
               placeholder="Buscar dirección..." 
-              className="rounded-sm border-0 focus:outline-none p-0 h-auto bg-transparent placeholder:text-muted-foreground/60"
+              className="rounded-sm border-0 focus:outline-none p-4px h-auto bg-transparent placeholder:text-muted-foreground/60"
               value={searchQuery}
               onChange={(e) => handleSearchInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
