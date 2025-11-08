@@ -327,7 +327,10 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => {
+                console.log('Filter button clicked, current state:', showFilters);
+                setShowFilters(!showFilters);
+              }}
               className="h-10 w-10 flex-shrink-0"
             >
               <Filter className="w-5 h-5" />
@@ -335,7 +338,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
           </div>
           
           {showSuggestions && suggestions.length > 0 && (
-            <Card className="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto">
+            <Card className="absolute top-full left-0 right-0 mt-1 max-h-60 overflow-y-auto z-20">
               {suggestions.map((suggestion, index) => (
                 <div
                   key={index}
@@ -350,7 +353,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
           )}
 
           {showFilters && (
-            <Card className="absolute top-full left-0 right-0 mt-1 p-4 max-h-96 overflow-y-auto">
+            <Card className="absolute top-full left-0 right-0 mt-1 p-4 max-h-96 overflow-y-auto z-20 bg-card">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-semibold text-sm">Filtros</h3>
                 <Button
