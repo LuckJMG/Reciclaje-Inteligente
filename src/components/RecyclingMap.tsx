@@ -84,36 +84,27 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       const el = document.createElement('div');
       el.className = 'recycling-marker';
       el.style.cursor = 'pointer';
+      el.style.transition = 'transform 0.2s ease';
       
-      // Create inner element for styling and animations
-      const inner = document.createElement('div');
-      inner.style.width = '40px';
-      inner.style.height = '40px';
-      inner.style.borderRadius = '50%';
-      inner.style.display = 'flex';
-      inner.style.alignItems = 'center';
-      inner.style.justifyContent = 'center';
-      inner.style.transition = 'transform 0.2s ease';
-      
-      // Set color based on status
+      // Set stroke color based on status
+      let strokeColor = '';
       if (point.status === 'available') {
-        inner.style.backgroundColor = 'hsl(var(--status-available))';
+        strokeColor = 'hsl(var(--status-available))';
       } else if (point.status === 'nearly-full') {
-        inner.style.backgroundColor = 'hsl(var(--status-nearly-full))';
+        strokeColor = 'hsl(var(--status-nearly-full))';
       } else {
-        inner.style.backgroundColor = 'hsl(var(--status-full))';
+        strokeColor = 'hsl(var(--status-full))';
       }
       
-      inner.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
-      
-      el.appendChild(inner);
+      // Create MapPin icon without background circle
+      el.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="${strokeColor}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>`;
 
       el.addEventListener('mouseenter', () => {
-        inner.style.transform = 'scale(1.1)';
+        el.style.transform = 'scale(1.15)';
       });
 
       el.addEventListener('mouseleave', () => {
-        inner.style.transform = 'scale(1)';
+        el.style.transform = 'scale(1)';
       });
 
       el.addEventListener('click', () => {
