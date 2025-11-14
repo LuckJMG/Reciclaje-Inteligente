@@ -84,6 +84,11 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       const el = document.createElement('div');
       el.className = 'recycling-marker';
       el.style.cursor = 'pointer';
+      el.style.width = '32px';
+      el.style.height = '32px';
+      el.style.display = 'flex';
+      el.style.alignItems = 'center';
+      el.style.justifyContent = 'center';
       el.style.transition = 'transform 0.2s ease';
       
       // Set stroke color based on status
@@ -113,7 +118,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
 
       const marker = new mapboxgl.Marker({
         element: el,
-        anchor: 'center'
+        anchor: 'bottom'
       })
         .setLngLat([point.lng, point.lat])
         .addTo(map.current!);
