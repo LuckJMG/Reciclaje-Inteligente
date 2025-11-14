@@ -90,15 +90,16 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
       el.style.transition = 'transform 0.2s ease';
+      el.style.transformOrigin = 'center center';
       
-      // Set stroke color based on status
+      // Set stroke color based on status (darker colors for better contrast)
       let strokeColor = '';
       if (point.status === 'available') {
-        strokeColor = 'hsl(var(--status-available))';
+        strokeColor = '#16a34a'; // Dark green
       } else if (point.status === 'nearly-full') {
-        strokeColor = 'hsl(var(--status-nearly-full))';
+        strokeColor = '#ea580c'; // Dark orange
       } else {
-        strokeColor = 'hsl(var(--status-full))';
+        strokeColor = '#dc2626'; // Dark red
       }
       
       // Create MapPin icon without background circle
