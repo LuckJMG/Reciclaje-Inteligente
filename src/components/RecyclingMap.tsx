@@ -89,7 +89,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       el.style.display = 'flex';
       el.style.alignItems = 'center';
       el.style.justifyContent = 'center';
-      el.style.backgroundColor = '#6b7280'; // Gray background
+      el.style.backgroundColor = '#e5e7eb'; // Light gray background
       el.style.borderRadius = '50%';
       
       // Set stroke color based on status (darker colors for better contrast)
