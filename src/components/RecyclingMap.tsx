@@ -97,7 +97,7 @@ export const RecyclingMap: React.FC<RecyclingMapProps> = ({ mapboxToken }) => {
       if (point.status === 'available') {
         strokeColor = '#16a34a'; // Dark green
       } else if (point.status === 'nearly-full') {
-        strokeColor = ''#f4a900''; 
+        strokeColor = '#f4a900'; 
       } else {
         strokeColor = '#dc2626'; // Dark red
       }
